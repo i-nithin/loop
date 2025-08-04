@@ -10,7 +10,7 @@ type ActiveTab = 'announcements' | 'create' | 'analytics' | 'embed';
 
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('announcements');
-  const { announcements, loading, addAnnouncement, updateAnnouncement, deleteAnnouncement } = useAnnouncements();
+  const { announcements, loading, error, addAnnouncement, updateAnnouncement, deleteAnnouncement } = useAnnouncements();
 
   const tabs = [
     { id: 'announcements' as const, label: 'Announcements', icon: Settings },
