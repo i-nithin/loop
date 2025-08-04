@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Copy, Check, Code, Settings } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 export const EmbedCodeGenerator: React.FC = () => {
   const [copied, setCopied] = useState(false);
+  const { user } = useAuth();
   const [config, setConfig] = useState({
     position: 'bottom-right',
     theme: 'light',
@@ -13,6 +15,7 @@ export const EmbedCodeGenerator: React.FC = () => {
   const embedCode = `<!-- Announcements Widget -->
 <script>
   window.AnnouncementsConfig = {
+    userId: '${user?.id || 'YOUR_USER_ID'}',
     position: '${config.position}',
     theme: '${config.theme}',
     showBadge: ${config.showBadge},
@@ -127,6 +130,7 @@ export const EmbedCodeGenerator: React.FC = () => {
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <h4 className="font-medium text-blue-900 mb-2">Installation Instructions</h4>
         <ol className="text-sm text-blue-800 space-y-1">
+          <li>0. Replace 'YOUR_USER_ID' with your actual user ID: <code className="bg-blue-100 px-1 rounded">{user?.id}</code></li>
           <li>1. Copy the embed code above</li>
           <li>2. Paste it before the closing <code>&lt;/body&gt;</code> tag on your website</li>
           <li>3. The widget will appear automatically on your site</li>

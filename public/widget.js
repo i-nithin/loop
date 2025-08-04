@@ -274,18 +274,27 @@
 
   async function fetchAnnouncements() {
     try {
-      const response = await fetch(`${config.apiUrl}/api/announcements`);
+      const userId = config.userId;
+      if (!userId) {
+        console.error('User ID is required for announcements widget');
+        return [];
+      }
+
+      const response = await fetch(`${config.apiUrl}/functions/v1/announcements`, {
+        headers: {
+          'x-user-id': userId,
+          'Content-Type': 'application/json'
+        }
+      });
+      
       if (!response.ok) {
         throw new Error('Failed to fetch announcements');
       }
       const announcements = await response.json();
-      return announcements.filter(a => a.status === 'published');
+      return announcements;
     } catch (error) {
       console.error('Failed to fetch announcements:', error);
-      // Fallback to localStorage for demo
-      const stored = localStorage.getItem('announcements');
-      const announcements = stored ? JSON.parse(stored) : [];
-      return announcements.filter(a => a.status === 'published');
+      return [];
     }
   }
 

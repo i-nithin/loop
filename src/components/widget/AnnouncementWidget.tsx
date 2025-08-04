@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, X, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
-import { useAnnouncements } from '../../hooks/useAnnouncements';
 import { useReadStatus } from '../../hooks/useReadStatus';
 import { Announcement } from '../../types';
+import { useAuth } from '../../hooks/useAuth';
 
 interface WidgetConfig {
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
   theme?: 'light' | 'dark';
   showBadge?: boolean;
   autoOpen?: boolean;
+  userId?: string;
 }
 
 interface AnnouncementWidgetProps {
@@ -20,15 +21,53 @@ export const AnnouncementWidget: React.FC<AnnouncementWidgetProps> = ({
     position: 'bottom-right',
     theme: 'light',
     showBadge: true,
-    autoOpen: false
+    autoOpen: false,
+    userId: undefined
   }
 }) => {
   const [isOpen, setIsOpen] = useState(config.autoOpen || false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const { announcements } = useAnnouncements();
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(true);
   const { markAsRead, markAllAsRead, isRead, getUnreadCount } = useReadStatus();
+  const { user } = useAuth();
 
-  const publishedAnnouncements = announcements.filter(a => a.isPublished);
+  const fetchAnnouncements = async () => {
+    try {
+      setLoading(true);
+      const userId = config.userId || user?.id;
+      
+      if (!userId) {
+        setAnnouncements([]);
+        return;
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/announcements`, {
+        headers: {
+          'x-user-id': userId,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch announcements');
+      }
+
+      const data = await response.json();
+      setAnnouncements(data);
+    } catch (error) {
+      console.error('Error fetching announcements:', error);
+      setAnnouncements([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, [config.userId, user?.id]);
+
+  const publishedAnnouncements = announcements;
   const unreadCount = getUnreadCount(publishedAnnouncements.map(a => a.id));
 
   const positionClasses = {
@@ -109,7 +148,11 @@ export const AnnouncementWidget: React.FC<AnnouncementWidgetProps> = ({
           </div>
 
           <div className="max-h-80 overflow-y-auto">
-            {publishedAnnouncements.length === 0 ? (
+            {loading ? (
+              <div className="p-4 text-center text-gray-500">
+                Loading announcements...
+              </div>
+            ) : publishedAnnouncements.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
                 No announcements yet
               </div>
@@ -137,7 +180,7 @@ export const AnnouncementWidget: React.FC<AnnouncementWidgetProps> = ({
                             )}
                           </div>
                           <p className={`text-xs text-gray-600 ${expanded ? '' : 'line-clamp-2'}`}>
-                            {announcement.content}
+                            <span dangerouslySetInnerHTML={{ __html: announcement.content }} />
                           </p>
                           {expanded && announcement.imageUrl && (
                             <img
@@ -146,9 +189,9 @@ export const AnnouncementWidget: React.FC<AnnouncementWidgetProps> = ({
                               className="w-full h-32 object-cover rounded mt-2"
                             />
                           )}
-                          {expanded && announcement.link && (
+                          {expanded && announcement.linkUrl && (
                             <a
-                              href={announcement.link}
+                              href={announcement.linkUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-xs mt-2"
@@ -161,7 +204,7 @@ export const AnnouncementWidget: React.FC<AnnouncementWidgetProps> = ({
                         </div>
                         <div className="flex items-center gap-1 ml-2">
                           <span className="text-xs text-gray-500">
-                            {new Date(announcement.publishedAt).toLocaleDateString()}
+                            {new Date(announcement.publishedAt || announcement.createdAt).toLocaleDateString()}
                           </span>
                           {expanded ? (
                             <ChevronUp className="w-4 h-4 text-gray-400" />

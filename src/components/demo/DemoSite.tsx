@@ -1,8 +1,11 @@
 import React from 'react';
 import { Star, Heart, Share2 } from 'lucide-react';
 import { AnnouncementWidget } from '../widget/AnnouncementWidget';
+import { useAuth } from '../../hooks/useAuth';
 
 export const DemoSite: React.FC = () => {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <header className="bg-white shadow-sm">
@@ -92,6 +95,7 @@ export const DemoSite: React.FC = () => {
 
       <AnnouncementWidget
         config={{
+          userId: user?.id,
           position: 'bottom-right',
           theme: 'light',
           showBadge: true,
