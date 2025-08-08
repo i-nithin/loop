@@ -8,7 +8,7 @@
     theme: 'light',
     showBadge: true,
     autoOpen: false,
-    apiUrl: window.location.origin
+    supabaseUrl: window.location.origin
   };
 
   // Merge user config with defaults
