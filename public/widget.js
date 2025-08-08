@@ -276,7 +276,7 @@
         return [];
       }
 
-      const response = await fetch(`${config.apiUrl}/functions/v1/announcements`, {
+      const response = await fetch(`${config.supabaseUrl}/functions/v1/announcements`, {
         headers: {
           'x-user-id': userId,
           'Content-Type': 'application/json'
