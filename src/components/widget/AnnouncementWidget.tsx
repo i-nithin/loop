@@ -42,7 +42,6 @@ export const AnnouncementWidget: React.FC<AnnouncementWidgetProps> = ({
         return;
       }
 
-      const response = await fetch('/functions/v1/announcements', {
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/announcements`, {
         headers: {
           'x-user-id': userId,
