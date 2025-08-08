@@ -220,15 +220,13 @@
                 ">${announcement.title}</h4>
                 ${unread ? `<div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%;"></div>` : ''}
               </div>
-              <p style="
+              <div style="
                 margin: 0 0 8px 0;
                 font-size: 13px;
                 line-height: 1.4;
                 color: ${config.theme === 'dark' ? '#d1d5db' : '#4b5563'};
-              " dangerouslySetInnerHTML="${announcement.content}"></div>
-              ${announcement.link ? `
+              ">${announcement.content}</div>
               ${announcement.linkUrl ? `
-                <a href="${announcement.link}" target="_blank" style="
                 <a href="${announcement.linkUrl}" target="_blank" style="
                   font-size: 12px;
                   color: #3b82f6;
@@ -254,10 +252,6 @@
           </div>
         </div>
       `;
-    }
-    )
-    }
-    )
     }).join('');
 
     // Add click handlers
@@ -370,9 +364,3 @@
   }
 
 })();
-  }
-}
-)
-  }
-}
-)
