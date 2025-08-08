@@ -44,6 +44,7 @@ export const AnnouncementWidget: React.FC<AnnouncementWidgetProps> = ({
 
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/announcements`, {
         headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           'x-user-id': userId,
           'Content-Type': 'application/json'
         }

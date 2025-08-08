@@ -1,6 +1,6 @@
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-user-id',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-user-id, Authorization',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 }
 
@@ -12,14 +12,15 @@ Deno.serve(async (req) => {
   try {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     )
 
+    const authHeader = req.headers.get('authorization')
     const userId = req.headers.get('x-user-id')
     
-    if (!userId) {
+    if (!authHeader || !userId) {
       return new Response(
-        JSON.stringify({ error: 'User ID required' }),
+        JSON.stringify({ error: 'Authorization and User ID required' }),
         { 
           status: 400, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 

@@ -17,6 +17,7 @@ export const EmbedCodeGenerator: React.FC = () => {
   window.AnnouncementsConfig = {
     userId: '${user?.id || 'YOUR_USER_ID'}',
     supabaseUrl: '${import.meta.env.VITE_SUPABASE_URL}',
+    supabaseAnonKey: '${import.meta.env.VITE_SUPABASE_ANON_KEY}',
     position: '${config.position}',
     theme: '${config.theme}',
     showBadge: ${config.showBadge},
