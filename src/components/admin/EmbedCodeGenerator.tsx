@@ -16,8 +16,7 @@ export const EmbedCodeGenerator: React.FC = () => {
 <script>
   window.AnnouncementsConfig = {
     userId: '${user?.id || 'YOUR_USER_ID'}',
-    supabaseUrl: '${import.meta.env.VITE_SUPABASE_URL}',
-    supabaseAnonKey: '${import.meta.env.VITE_SUPABASE_ANON_KEY}',
+    apiEndpoint: '${window.location.origin}/api/announcements',
     position: '${config.position}',
     theme: '${config.theme}',
     showBadge: ${config.showBadge},
@@ -134,9 +133,10 @@ export const EmbedCodeGenerator: React.FC = () => {
         <ol className="text-sm text-blue-800 space-y-1">
           <li>0. Replace 'YOUR_USER_ID' with your actual user ID: <code className="bg-blue-100 px-1 rounded">{user?.id}</code></li>
           <li>1. Copy the embed code above</li>
-          <li>2. Paste it before the closing <code>&lt;/body&gt;</code> tag on your website</li>
-          <li>3. The widget will appear automatically on your site</li>
-          <li>4. Customize the position and appearance using the configuration options</li>
+          <li>2. Make sure your website can access the API endpoint at /api/announcements</li>
+          <li>3. Paste the code before the closing <code></body></code> tag on your website</li>
+          <li>4. The widget will appear automatically on your site</li>
+          <li>5. Customize the position and appearance using the configuration options</li>
         </ol>
       </div>
     </div>

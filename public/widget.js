@@ -8,7 +8,7 @@
     theme: 'light',
     showBadge: true,
     autoOpen: false,
-    supabaseUrl: window.location.origin
+    apiEndpoint: window.location.origin + '/api/announcements'
   };
 
   // Merge user config with defaults
@@ -276,13 +276,7 @@
         return [];
       }
 
-      const response = await fetch(`${config.supabaseUrl}/functions/v1/announcements`, {
-        headers: {
-          'Authorization': `Bearer ${config.supabaseAnonKey}`,
-          'x-user-id': userId,
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await fetch(`${config.apiEndpoint}?userId=${encodeURIComponent(userId)}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch announcements');
