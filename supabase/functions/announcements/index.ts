@@ -1,3 +1,5 @@
+import { createClient } from 'npm:@supabase/supabase-js@2'
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-user-id, Authorization',
@@ -15,12 +17,11 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     )
 
-    const authHeader = req.headers.get('authorization')
     const userId = req.headers.get('x-user-id')
     
-    if (!authHeader || !userId) {
+    if (!userId) {
       return new Response(
-        JSON.stringify({ error: 'Authorization and User ID required' }),
+        JSON.stringify({ error: 'User ID required' }),
         { 
           status: 400, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
